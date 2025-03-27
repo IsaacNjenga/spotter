@@ -1,8 +1,10 @@
-import { Button, Card, Form, Input, TimePicker, Space } from "antd";
+import { Button, Card, Form, Input, TimePicker, Space, Typography } from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { format } from "date-fns";
-import { useLocation as useReactRouterLocation } from "react-router-dom";
+import axios from "axios";
+
+const { Text } = Typography; // Ant Design Text component for display
 
 const initialValues = {
   currentLocation: "",
@@ -12,11 +14,7 @@ const initialValues = {
 function LocationLog() {
   const [form] = Form.useForm();
   const [values, setValues] = useState(initialValues);
-  const reactRouterLocation = useReactRouterLocation();
-  const [selectedLocation, setSelectedLocation] = useState({
-    lat: null,
-    lng: null,
-  });
+  const [address, setAddress] = useState(""); // Store the fetched address
 
   const handleChange = (name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -35,14 +33,25 @@ function LocationLog() {
   const useMyLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           const locationString = `Lat: ${lat}, Lng: ${lng}`;
 
-          // Update the input field
-          setValues((prev) => ({ ...prev, currentLocation: locationString }));
-          form.setFieldsValue({ currentLocation: locationString });
+          try {
+            const res = await axios.get(`/geocode?lat=${lat}&lng=${lng}`);
+            console.log("Geocode Response:", res.data);
+
+            const formattedAddress =
+              res.data.results[0]?.formatted || "Address not found";
+
+            // Update input and display address
+            setValues((prev) => ({ ...prev, currentLocation: locationString }));
+            form.setFieldsValue({ currentLocation: locationString });
+            setAddress(formattedAddress); // Store address for display
+          } catch (error) {
+            console.error("Error fetching address:", error);
+          }
         },
         (error) => {
           console.error("Error fetching location:", error);
@@ -57,6 +66,7 @@ function LocationLog() {
     console.log(values);
     form.resetFields();
     setValues(initialValues);
+    setAddress(""); // Clear address after submitting
   };
 
   return (
@@ -89,6 +99,13 @@ function LocationLog() {
             </Button>
           </Form.Item>
         </Form>
+
+        {/* Display the fetched address */}
+        {address && (
+          <Text strong style={{ marginTop: "10px", display: "block" }}>
+            Address: {address}
+          </Text>
+        )}
       </Card>
     </>
   );
