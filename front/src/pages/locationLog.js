@@ -1,113 +1,176 @@
-import { Button, Card, Form, Input, TimePicker, Space, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  TimePicker,
+  Typography,
+  Divider,
+} from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { format } from "date-fns";
 import axios from "axios";
-
-const { Text } = Typography; // Ant Design Text component for display
+import CurrentLog from "../components/currentLog";
+import { format } from "date-fns";
 
 const initialValues = {
-  currentLocation: "",
-  time: null,
+  currentLocations: [
+    {
+      currentCoordinates: { lat: -1.2471951, lng: 36.6790986 },
+      currentLocation: "unnamed road, Kinoo ward, 12345, Kenya",
+      currentTime: "03:00",
+      key: 1743155574824,
+    },
+    { currentLocation: "Ngong", currentTime: "06:00", key: 1743155583969 },
+  ],
+  dropoffLocation: "",
+  pickupLocation: "",
+  pickupTime: null,
+  dropoffTime: null,
+};
+
+const labelStyle = { fontFamily: "Raleway", fontWeight: 600 };
+const inputStyle = {
+  fontFamily: "Roboto",
+  borderRadius: "8px",
+};
+const buttonStyle = {
+  borderRadius: "8px",
+  fontWeight: 600,
+};
+const cardStyle = {
+  background: "#ffffff",
+  maxWidth: 700,
+  margin: "20px auto",
+  padding: "20px",
+  borderRadius: "12px",
+  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
 };
 
 function LocationLog() {
   const [form] = Form.useForm();
   const [values, setValues] = useState(initialValues);
-  const [address, setAddress] = useState(""); // Store the fetched address
+  const [address, setAddress] = useState("");
 
   const handleChange = (name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTimeChange = (time) => {
+  const handleTimeChange = (name, time) => {
     if (time) {
       const selectedTime = format(
         new Date(time.$d),
         "yyyy-MM-dd'T'HH:mm:ss'Z'"
       );
-      handleChange("time", selectedTime);
+      setValues((prev) => ({ ...prev, [name]: selectedTime }));
     }
   };
 
-  const useMyLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const locationString = `Lat: ${lat}, Lng: ${lng}`;
+  const handleCurrentChange = (index, field, value) => {
+    setValues((prevValues) => {
+      const updatedLocations = [...prevValues.currentLocations];
+      updatedLocations[index] = {
+        ...updatedLocations[index],
+        [field]: value,
+      };
+      return { ...prevValues, currentLocations: updatedLocations };
+    });
+  };
 
-          try {
-            const res = await axios.get(`/geocode?lat=${lat}&lng=${lng}`);
-            console.log("Geocode Response:", res.data);
-
-            const formattedAddress =
-              res.data.results[0]?.formatted || "Address not found";
-
-            // Update input and display address
-            setValues((prev) => ({ ...prev, currentLocation: locationString }));
-            form.setFieldsValue({ currentLocation: locationString });
-            setAddress(formattedAddress); // Store address for display
-          } catch (error) {
-            console.error("Error fetching address:", error);
-          }
-        },
-        (error) => {
-          console.error("Error fetching location:", error);
-        }
-      );
-    } else {
-      console.log("Geolocation not supported by this browser");
-    }
+  const handleCurrentTimeChange = (index, field, value) => {
+    setValues((prevValues) => {
+      const updatedLocations = [...prevValues.currentLocations];
+      updatedLocations[index] = {
+        ...updatedLocations[index],
+        [field]: value ? value.format("HH:mm") : "",
+      };
+      return { ...prevValues, currentLocations: updatedLocations };
+    });
   };
 
   const handleSubmit = () => {
     console.log(values);
     form.resetFields();
-    setValues(initialValues);
-    setAddress(""); // Clear address after submitting
+    setValues([]);
+    setAddress("");
   };
 
   return (
-    <>
-      <Card>
-        <Form layout="vertical" form={form} onFinish={handleSubmit}>
-          <Form.Item label="Select Time" name="time">
-            <TimePicker
-              onChange={handleTimeChange}
-              defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
-            />
-          </Form.Item>
-          <Form.Item label="Current Location" name="currentLocation">
-            <Space.Compact style={{ width: "100%" }}>
-              <Input
-                value={values.currentLocation}
-                onChange={(e) =>
-                  handleChange("currentLocation", e.target.value)
-                }
-                placeholder="Enter location or use GPS"
-              />
-              <Button type="primary" onClick={useMyLocation}>
-                Use My Location
-              </Button>
-            </Space.Compact>
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Log
-            </Button>
-          </Form.Item>
-        </Form>
+    <Card style={cardStyle}>
+      <Typography.Title level={3} style={{ textAlign: "center" }}>
+        Location Logger
+      </Typography.Title>
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={handleSubmit}
+        initialValues={values}
+      >
+        <Divider>Pick Up Details</Divider>
+        <Form.Item
+          label={<span style={labelStyle}>Pickup Time</span>}
+          name="pickupTime"
+        >
+          <TimePicker
+            onChange={(value) => handleTimeChange("pickupTime", value)}
+            defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
+            style={inputStyle}
+          />
+        </Form.Item>
+        <Form.Item
+          label={<span style={labelStyle}>Pickup Location</span>}
+          name="pickupLocation"
+        >
+          <Input
+            value={values.pickupLocation}
+            onChange={(e) => handleChange("pickupLocation", e.target.value)}
+            placeholder="Enter pickup location"
+            style={inputStyle}
+          />
+        </Form.Item>
 
-        {/* Display the fetched address */}
-        {address && (
-          <Text strong style={{ marginTop: "10px", display: "block" }}>
-            Address: {address}
-          </Text>
-        )}
-      </Card>
-    </>
+        <Divider>Current Location Details</Divider>
+        <CurrentLog
+          initialValues={initialValues}
+          setValues={setValues}
+          values={values}
+          handleCurrentChange={handleCurrentChange}
+          inputStyle={inputStyle}
+          handleCurrentTimeChange={handleCurrentTimeChange}
+          buttonStyle={buttonStyle}
+          address={address}
+        />
+
+        <Divider>Drop Off Details</Divider>
+        <Form.Item
+          label={<span style={labelStyle}>Dropoff Time</span>}
+          name="dropoffTime"
+        >
+          <TimePicker
+            onChange={(value) => handleTimeChange("dropoffTime", value)}
+            defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
+            style={inputStyle}
+          />
+        </Form.Item>
+        <Form.Item
+          label={<span style={labelStyle}>Dropoff Location</span>}
+          name="dropoffLocation"
+        >
+          <Input
+            value={values.dropoffLocation}
+            onChange={(e) => handleChange("dropoffLocation", e.target.value)}
+            placeholder="Enter dropoff location"
+            style={inputStyle}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" style={buttonStyle} block>
+            Save Log
+          </Button>
+        </Form.Item>
+      </Form>
+    </Card>
   );
 }
 

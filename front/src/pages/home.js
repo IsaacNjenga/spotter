@@ -12,13 +12,13 @@ function Home() {
         <div className="content-container">
           <div
             style={{
-              padding: "35px 20px",
+              padding: "35px 25px",
               background: "rgba(255, 255, 255, 0.3)",
               display: "flex",
               flexDirection: "column",
               margin: "10px 10px",
               borderRadius: "12px",
-              maxWidth: "500px",
+              maxWidth: "550px",
             }}
           >
             <Title
@@ -30,7 +30,7 @@ function Home() {
                 textAlign: "left",
               }}
             >
-              Having a nice journey?
+              Hope you're having a nice journey
             </Title>
             <Text
               style={{
