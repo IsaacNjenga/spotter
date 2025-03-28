@@ -9,6 +9,7 @@ import {
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Select from "react-select";
 
 function CurrentLog({
   setValues,
@@ -80,6 +81,21 @@ function CurrentLog({
     });
   };
 
+  const handleModeChange = (index, name, value) => {
+    setValues((prevValues) => {
+      const updatedLocations = [...prevValues.currentLocations];
+      updatedLocations[index] = { ...updatedLocations[index], [name]: value };
+      return { ...prevValues, currentLocations: updatedLocations };
+    });
+  };
+
+  const modes = [
+    { label: "Off-Duty", value: "Off-Duty" },
+    { label: "Sleeper Berth", value: "Sleeper Berth" },
+    { label: "Driving", value: "Driving" },
+    { label: "On-Duty", value: "On-Duty" },
+  ];
+
   const columns = [
     {
       title: "Current Location",
@@ -135,7 +151,24 @@ function CurrentLog({
       ),
     },
     {
-      title: "Remove",
+      title: "Mode",
+      dataIndex: "currentMode",
+      render: (_, record, index) => (
+        <Select
+          name="currentMode"
+          onChange={(selectedOption) =>
+            handleModeChange(index, "currentMode", selectedOption.value)
+          }
+          value={modes.find((mode) => mode.value === record.currentMode)}
+          options={modes}
+          getOptionLabel={(e) => e.label} // Ensures label is displayed properly
+          getOptionValue={(e) => e.value} // Ensures value selection works
+          styles={{ width: "50%" }}
+        />
+      ),
+    },
+    {
+      title: "",
       render: (_, __, index) => (
         <Button
           type="text"
@@ -172,7 +205,6 @@ function CurrentLog({
 }
 
 export default CurrentLog;
-
 
 // const initialValues = {
 //     currentLocations: [

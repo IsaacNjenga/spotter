@@ -12,21 +12,14 @@ import dayjs from "dayjs";
 import axios from "axios";
 import CurrentLog from "../components/currentLog";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
 
 const initialValues = {
-  currentLocations: [
-    {
-      currentCoordinates: { lat: -1.2471951, lng: 36.6790986 },
-      currentLocation: "unnamed road, Kinoo ward, 12345, Kenya",
-      currentTime: "03:00",
-      key: 1743155574824,
-    },
-    { currentLocation: "Ngong", currentTime: "06:00", key: 1743155583969 },
-  ],
+  currentLocations: [],
   dropoffLocation: "",
   pickupLocation: "",
-  pickupTime: null,
-  dropoffTime: null,
+  pickupTime: "",
+  dropoffTime: "",
 };
 
 const labelStyle = { fontFamily: "Raleway", fontWeight: 600 };
@@ -39,8 +32,8 @@ const buttonStyle = {
   fontWeight: 600,
 };
 const cardStyle = {
-  background: "#ffffff",
-  maxWidth: 700,
+  background: "#fff",
+  maxWidth: 900,
   margin: "20px auto",
   padding: "20px",
   borderRadius: "12px",
@@ -51,6 +44,7 @@ function LocationLog() {
   const [form] = Form.useForm();
   const [values, setValues] = useState(initialValues);
   const [address, setAddress] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -88,11 +82,31 @@ function LocationLog() {
     });
   };
 
-  const handleSubmit = () => {
-    console.log(values);
-    form.resetFields();
-    setValues([]);
-    setAddress("");
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      console.log(values);
+      const res = await axios.post("create-log", values);
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Log saved successfully",
+        });
+        form.resetFields();
+        setValues([]);
+        setAddress("");
+      }
+    } catch (error) {
+      console.log(error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.error
+          ? error.response.data.error
+          : "An Unexpected error occured. Please try again later";
+      Swal.fire({ icon: "warning", title: "Error", text: errorMessage });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -163,10 +177,15 @@ function LocationLog() {
             style={inputStyle}
           />
         </Form.Item>
-
+        <Divider />
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={buttonStyle} block>
-            Save Log
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={buttonStyle}
+            loading={loading}
+          >
+            {loading ? "Saving Log. Please wait" : "Save Log"}
           </Button>
         </Form.Item>
       </Form>
