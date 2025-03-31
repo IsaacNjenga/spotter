@@ -7,6 +7,7 @@ import Auth from "./pages/auth";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import LocationLog from "./pages/locationLog";
+import Logs from "./pages/logs.js";
 
 const cookies = new Cookies();
 
@@ -19,6 +20,14 @@ const authToken = cookies.get("token");
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userId = cookies.get("userId");
+    if (userId) {
+      setUser(userId);
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -30,13 +39,14 @@ function App() {
     return <Auth />;
   }
   return (
-    <UserContext.Provider value={{ isMobile }}>
+    <UserContext.Provider value={{ isMobile, user }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navbar />}>
             <Route index element={<Home />} />
             <Route path="log-trip" element={<LogTrip />} />
             <Route path="log-location" element={<LocationLog />} />
+            <Route path="logs" element={<Logs />} />
           </Route>
         </Routes>
       </BrowserRouter>

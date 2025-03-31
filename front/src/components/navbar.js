@@ -52,6 +52,7 @@ function Navbar() {
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Daily Log", path: "/log-trip" },
+    { label: "Logs", path: "/logs" },
   ];
 
   const toggleDrawer = () => setDrawerVisible(!drawerVisible);
@@ -138,7 +139,7 @@ function Navbar() {
                         borderBottom: "2px solid #2a75d7",
                       }}
                     >
-                      {firstName.toUpperCase()} {lastName.toUpperCase()}
+                      {firstName?.toUpperCase()} {lastName?.toUpperCase()}
                     </Link>
                   </h1>
                 </>

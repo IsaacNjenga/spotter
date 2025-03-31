@@ -98,23 +98,6 @@ function CurrentLog({
 
   const columns = [
     {
-      title: "Current Location",
-      dataIndex: "currentLocation",
-      render: (_, record, index) => (
-        <Space.Compact style={{ width: "100%" }}>
-          <Input
-            value={record.currentLocation}
-            onChange={(e) =>
-              handleCurrentChange(index, "currentLocation", e.target.value)
-            }
-            placeholder="Enter location"
-            style={inputStyle}
-            required
-          />
-        </Space.Compact>
-      ),
-    },
-    {
       title: "Set Coordinates",
       dataIndex: "currentCoordinates",
       render: (_, __, index) => (
@@ -135,6 +118,24 @@ function CurrentLog({
         </Space.Compact>
       ),
     },
+    {
+      title: "Current Location",
+      dataIndex: "currentLocation",
+      render: (_, record, index) => (
+        <Space.Compact style={{ width: "100%" }}>
+          <Input
+            value={record.currentLocation}
+            onChange={(e) =>
+              handleCurrentChange(index, "currentLocation", e.target.value)
+            }
+            placeholder="Enter location"
+            style={inputStyle}
+            required
+          />
+        </Space.Compact>
+      ),
+    },
+
     {
       title: "Set Time",
       dataIndex: "currentTime",
@@ -161,8 +162,8 @@ function CurrentLog({
           }
           value={modes.find((mode) => mode.value === record.currentMode)}
           options={modes}
-          getOptionLabel={(e) => e.label} // Ensures label is displayed properly
-          getOptionValue={(e) => e.value} // Ensures value selection works
+          getOptionLabel={(e) => e.label}
+          getOptionValue={(e) => e.value}
           styles={{ width: "50%" }}
         />
       ),

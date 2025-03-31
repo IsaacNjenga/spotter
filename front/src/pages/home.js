@@ -1,24 +1,35 @@
 import { Button, Typography } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/home.css";
+import LogsToday from "../components/logsToday";
+import { UserContext } from "../App";
 
 const { Title, Text } = Typography;
 
 function Home() {
+  const { isMobile } = useContext(UserContext);
   return (
     <>
       <div className="home-bg">
-        <div className="content-container">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: "10px",
+            justifyContent: "space-around",
+          }}
+        >
           <div
             style={{
-              padding: "35px 25px",
-              background: "rgba(255, 255, 255, 0.3)",
+              padding: "10px 25px",
+              background: "rgba(255, 255, 255, 0.23)",
               display: "flex",
               flexDirection: "column",
-              margin: "10px 10px",
+              margin: "5px 10px",
               borderRadius: "12px",
-              maxWidth: "550px",
+              maxWidth: "500px",
+              flex: 1,
             }}
           >
             <Title
@@ -57,6 +68,16 @@ function Home() {
                 </Link>
               </Button>
             </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              
+              flex: 1,
+            }}
+          >
+            <LogsToday />
           </div>
         </div>
       </div>

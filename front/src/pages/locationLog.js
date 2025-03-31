@@ -6,13 +6,16 @@ import {
   TimePicker,
   Typography,
   Divider,
+  DatePicker,
 } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import CurrentLog from "../components/currentLog";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
+import { UserContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   currentLocations: [],
@@ -20,6 +23,8 @@ const initialValues = {
   pickupLocation: "",
   pickupTime: "",
   dropoffTime: "",
+  pickupDate: "",
+  dropoffDate: "",
 };
 
 const labelStyle = { fontFamily: "Raleway", fontWeight: 600 };
@@ -41,6 +46,8 @@ const cardStyle = {
 };
 
 function LocationLog() {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [values, setValues] = useState(initialValues);
   const [address, setAddress] = useState("");
@@ -52,14 +59,30 @@ function LocationLog() {
 
   const handleTimeChange = (name, time) => {
     if (time) {
-      const selectedTime = format(
-        new Date(time.$d),
-        "yyyy-MM-dd'T'HH:mm:ss'Z'"
-      );
+      const selectedTime = format(new Date(time.$d), "HH:mm");
       setValues((prev) => ({ ...prev, [name]: selectedTime }));
     }
   };
 
+  // const onDateChange = (name, date) => {
+  //   if (date) {
+  //     const selectedDate = format(
+  //       dayjs(date).toDate(),
+  //       "yyyy-MM-dd'T'HH:mm:ss'Z'"
+  //     );
+  //     setValues((prev) => ({ ...prev, [name]: selectedDate }));
+  //   }
+  // };
+
+  const onDateChange = (name, date) => {
+    if (date) {
+      setValues((prev) => ({
+        ...prev,
+        [name]: dayjs(date).toDate(), 
+      }));
+    }
+  };
+  
   const handleCurrentChange = (index, field, value) => {
     setValues((prevValues) => {
       const updatedLocations = [...prevValues.currentLocations];
@@ -85,8 +108,9 @@ function LocationLog() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      console.log(values);
-      const res = await axios.post("create-log", values);
+      const valuesData = { ...values, createdBy: user };
+      console.log(valuesData);
+      const res = await axios.post("create-log", valuesData);
       if (res.data.success) {
         Swal.fire({
           icon: "success",
@@ -96,6 +120,7 @@ function LocationLog() {
         form.resetFields();
         setValues([]);
         setAddress("");
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
@@ -121,16 +146,32 @@ function LocationLog() {
         initialValues={values}
       >
         <Divider>Pick Up Details</Divider>
-        <Form.Item
-          label={<span style={labelStyle}>Pickup Time</span>}
-          name="pickupTime"
-        >
-          <TimePicker
-            onChange={(value) => handleTimeChange("pickupTime", value)}
-            defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
-            style={inputStyle}
-          />
-        </Form.Item>
+        <div style={{ display: "flex", gap: "30px" }}>
+          <Form.Item
+            label={<span style={labelStyle}>Pickup Date</span>}
+            name="pickupDate"
+            layout="horizontal"
+          >
+            <DatePicker
+              onChange={(date) => onDateChange("pickupDate", date)}
+              value={values.pickupDate ? dayjs(values.pickupDate) : null}
+            />
+          </Form.Item>
+          <Form.Item
+            label={<span style={labelStyle}>Pickup Time</span>}
+            name="pickupTime"
+            layout="horizontal"
+          >
+            <TimePicker
+              value={
+                values.pickupTime ? dayjs(values.pickupTime, "HH:mm") : null
+              }
+              onChange={(value) => handleTimeChange("pickupTime", value)}
+              defaultOpenValue={dayjs("00:00", "HH:mm")}
+              style={inputStyle}
+            />
+          </Form.Item>{" "}
+        </div>
         <Form.Item
           label={<span style={labelStyle}>Pickup Location</span>}
           name="pickupLocation"
@@ -142,7 +183,6 @@ function LocationLog() {
             style={inputStyle}
           />
         </Form.Item>
-
         <Divider>Current Location Details</Divider>
         <CurrentLog
           initialValues={initialValues}
@@ -154,18 +194,33 @@ function LocationLog() {
           buttonStyle={buttonStyle}
           address={address}
         />
-
-        <Divider>Drop Off Details</Divider>
-        <Form.Item
-          label={<span style={labelStyle}>Dropoff Time</span>}
-          name="dropoffTime"
-        >
-          <TimePicker
-            onChange={(value) => handleTimeChange("dropoffTime", value)}
-            defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
-            style={inputStyle}
-          />
-        </Form.Item>
+        <Divider>Drop Off Details</Divider>{" "}
+        <div style={{ display: "flex", gap: "30px" }}>
+          <Form.Item
+            label={<span style={labelStyle}>Dropoff Date</span>}
+            name="dropoffDate"
+            layout="horizontal"
+          >
+            <DatePicker
+              onChange={(date) => onDateChange("dropoffDate", date)}
+              value={values.dropoffDate ? dayjs(values.dropoffDate) : null}
+            />
+          </Form.Item>
+          <Form.Item
+            label={<span style={labelStyle}>Dropoff Time</span>}
+            name="dropoffTime"
+            layout="horizontal"
+          >
+            <TimePicker
+              value={
+                values.dropoffTime ? dayjs(values.dropoffTime, "HH:mm") : null
+              }
+              onChange={(value) => handleTimeChange("dropoffTime", value)}
+              defaultOpenValue={dayjs("00:00", "HH:mm")}
+              style={inputStyle}
+            />
+          </Form.Item>
+        </div>
         <Form.Item
           label={<span style={labelStyle}>Dropoff Location</span>}
           name="dropoffLocation"

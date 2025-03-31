@@ -167,12 +167,11 @@ function Auth() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const valuesData = {
-        ...values,
-        avatarUrl: imageUrls[0],
-        avatarId: imagePublicIds[0],
-      };
-      console.log(valuesData);
+      // const valuesData = {
+      //   ...values,
+      //   avatarUrl: imageUrls[0],
+      //   avatarId: imagePublicIds[0],
+      // };
       const res = await axios.post(`${isSignUp ? "sign-up" : "login"}`, {
         ...values,
         avatarUrl: imageUrls[0],
@@ -186,6 +185,7 @@ function Auth() {
         });
 
         cookies.set("token", token);
+        cookies.set("userId", user._id);
         cookies.set("username", user.username);
         cookies.set("firstName", user.firstName);
         cookies.set("lastName", user.lastName);
@@ -202,6 +202,7 @@ function Auth() {
         // }
 
         window.location.reload();
+        
       }
     } catch (error) {
       console.log(error);

@@ -10,16 +10,22 @@ const locationSchema = new mongoose.Schema({
     type: String,
     enum: ["Off-Duty", "Sleeper Berth", "Driving", "On-Duty"],
   },
-  timestamp: { type: Date, default: Date.now },
+  currentTime: { type: String },
 });
 
 const logsSchema = new mongoose.Schema(
   {
     dropoffLocation: { type: String },
     pickupLocation: { type: String },
-    pickupTime: { type: Date },
-    dropoffTime: { type: Date },
+    pickupTime: { type: String },
+    pickupDate: { type: Date },
+    dropoffTime: { type: String },
+    dropoffDate: { type: Date },
     currentLocations: { type: [locationSchema], default: [] },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+    },
   },
   { collection: "logs", timestamps: true }
 );
