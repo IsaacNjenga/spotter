@@ -13,6 +13,8 @@ import "../assets/css/logs.css";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { UserContext } from "../App";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   carrierName: "",
@@ -23,9 +25,11 @@ const initialValues = {
   officeAddress: "",
   from: "",
   to: "",
+  terminalAddress: "",vehicleNumber:''
 };
 
 function LogTrip() {
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [values, setValues] = useState(initialValues);
   const [present, setPresent] = useState(false);
@@ -55,10 +59,9 @@ function LogTrip() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
     try {
-      form.resetFields();
       const valuesData = {
         ...values,
         date: date,
@@ -66,11 +69,17 @@ function LogTrip() {
         createdBy: user,
       };
       console.log(valuesData);
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Log saved successfully",
-      });
+      const res = await axios.post("create-shipping-log", valuesData);
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Log saved successfully",
+        });
+        form.resetFields();
+        setValues([]);
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
       const errorMessage =
@@ -110,7 +119,6 @@ function LogTrip() {
                 >
                   <DatePicker
                     onChange={onDateChange}
-                    // onChange={(dateString) => handleChange("date", dateString)}
                     value={values.date}
                     className="log-input"
                   />
@@ -330,9 +338,6 @@ function LogTrip() {
                   </Form.Item>
                 </div>
               </div>
-              {/* <div>
-                <ELDGrid eldData={eldData} />
-              </div> */}
               <Form.Item>
                 <Button
                   type="primary"

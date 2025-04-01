@@ -47,7 +47,7 @@ function LogsToday() {
                 >
                   <div>
                     <Title level={2} style={styles.heading}>
-                      Trip Log Today
+                      Today's Log Trip
                     </Title>
                   </div>
                   <div>
@@ -91,9 +91,14 @@ function LogsToday() {
                               }
                               description={
                                 <Text type="secondary">
-                                  {location.currentTime
-                                    ? `Time: ${formatTime(
-                                        location.currentTime
+                                {location.currentStartTime
+                                  ? `Time: ${formatTime(
+                                      location.currentStartTime
+                                    )}`
+                                  : "No time available"} - {" "}
+                                  {location.currentEndTime
+                                    ? `${formatTime(
+                                        location.currentEndTime
                                       )}`
                                     : "No time available"}
                                 </Text>

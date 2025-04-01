@@ -25,12 +25,12 @@ const ELDTimeline = ({ eldData }) => {
       const items = new DataSet(
         sortedData.map((log, index) => ({
           id: index,
-          content: log.status,
+          content: log.currentMode,
           start: log.startTime,
           end: log.endTime,
-          group: statusGroups[log.status].id, // Assign logs to a row
+          group: statusGroups[log.currentMode].id, // Assign logs to a row
           style: `background-color: ${
-            statusGroups[log.status].color
+            statusGroups[log.currentMode].color
           }; color: white; border-radius: 8px; padding: 5px; font-weight: bold;`,
         }))
       );
@@ -63,10 +63,10 @@ const ELDTimeline = ({ eldData }) => {
         groups, // Assign groups to timeline
         stack: false, // Prevent overlapping
         orientation: { axis: "top" }, // Move timeline to bottom
-        zoomable: true,
+        zoomable: false,
         start: sortedData[0]?.startTime, // Auto-start from first log
         end: sortedData[sortedData.length - 1]?.endTime, // Auto-end at last log
-        margin: { item: 10 }, // Add spacing
+        margin: { item: 5 }, // Add spacing
         tooltip: { followMouse: true, overflowMethod: "cap" }, // Enable tooltips
       });
     }
@@ -76,18 +76,18 @@ const ELDTimeline = ({ eldData }) => {
     <div
       style={{
         width: "100%",
-        height: "450px",
+        height: "460px",
         margin: "auto",
-        padding: "20px",
+        padding: "12px",
         backgroundColor: "#f8f9fa",
         borderRadius: "10px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: "15px", color: "#333" }}>
-        ELD Logs Timeline
+        ELD Timeline
       </h2>
-      <div ref={timelineRef} style={{ height: "100%" }}></div>
+      <div ref={timelineRef} style={{ height: "110%" }}></div>
     </div>
   );
 };

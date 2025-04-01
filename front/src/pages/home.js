@@ -4,14 +4,19 @@ import { Link } from "react-router-dom";
 import "../assets/css/home.css";
 import LogsToday from "../components/logsToday";
 import UseTodaysLog from "../assets/hooks/useTodaysLog";
+import ShippingLogToday from "../components/shippingLogToday";
 
 const { Title, Text } = Typography;
 
 function Home() {
   const { log } = UseTodaysLog();
+
   return (
     <>
       <div className="home-bg">
+        <div style={{ margin: "0px 20px", padding: "0px 20px" }}>
+          <ShippingLogToday />
+        </div>
         {log !== [] ? (
           <div
             style={{

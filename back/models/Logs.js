@@ -11,7 +11,8 @@ const locationSchema = new mongoose.Schema({
     type: String,
     enum: ["Off-Duty", "Sleeper Berth", "Driving", "On-Duty"],
   },
-  currentTime: { type: String },
+  currentStartTime: { type: String },
+  currentEndTime: { type: String },
 });
 
 const logsSchema = new mongoose.Schema(

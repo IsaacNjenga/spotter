@@ -93,9 +93,16 @@ const Logs = () => {
                             }
                             description={
                               <Text type="secondary">
-                                {location.currentTime
-                                  ? `Time: ${formatTime(location.currentTime)}`
-                                  : "No time available"}
+                                  {location.currentStartTime
+                                  ? `Time: ${formatTime(
+                                      location.currentStartTime
+                                    )}`
+                                  : "No time available"} - {" "}
+                                  {location.currentEndTime
+                                    ? `${formatTime(
+                                        location.currentEndTime
+                                      )}`
+                                    : "No time available"}
                               </Text>
                             }
                           />

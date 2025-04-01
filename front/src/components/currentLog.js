@@ -136,13 +136,27 @@ function CurrentLog({
       },
     },
     {
-      title: "Set Time",
+      title: "Set Start Time",
       dataIndex: "currentTime",
       render: (_, record, index) => (
         <TimePicker
-          value={record.currentTime ? dayjs(record.currentTime, "HH:mm") : null}
+          value={record.currentStartTime ? dayjs(record.currentStartTime, "HH:mm") : null}
           onChange={(value) =>
-            handleCurrentTimeChange(index, "currentTime", value)
+            handleCurrentTimeChange(index, "currentStartTime", value)
+          }
+          defaultOpenValue={dayjs("00:00", "HH:mm")}
+          style={inputStyle}
+          required
+        />
+      ),
+    },  {
+      title: "Set End Time",
+      dataIndex: "currentTime",
+      render: (_, record, index) => (
+        <TimePicker
+          value={record.currentEndTime ? dayjs(record.currentEndTime, "HH:mm") : null}
+          onChange={(value) =>
+            handleCurrentTimeChange(index, "currentEndTime", value)
           }
           defaultOpenValue={dayjs("00:00", "HH:mm")}
           style={inputStyle}
