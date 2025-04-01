@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const locationSchema = new mongoose.Schema({
+  key: { type: String },
   currentLocation: { type: String },
   currentCoordinates: {
     lat: { type: Number },

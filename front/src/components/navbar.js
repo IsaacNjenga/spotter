@@ -52,7 +52,7 @@ function Navbar() {
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Daily Log", path: "/log-trip" },
-    { label: "Logs", path: "/logs" },
+    { label: "All Logs", path: "/logs" },
   ];
 
   const toggleDrawer = () => setDrawerVisible(!drawerVisible);

@@ -8,9 +8,11 @@ import {
   InputNumber,
   Radio,
 } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../assets/css/logs.css";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
+import { UserContext } from "../App";
 
 const initialValues = {
   carrierName: "",
@@ -24,10 +26,12 @@ const initialValues = {
 };
 
 function LogTrip() {
+  const { user } = useContext(UserContext);
   const [values, setValues] = useState(initialValues);
   const [present, setPresent] = useState(false);
   const [date, setDate] = useState(null);
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -52,13 +56,31 @@ function LogTrip() {
   };
 
   const handleSubmit = () => {
-    form.resetFields();
-    const valuesData = {
-      ...values,
-      date: date,
-      codriverName: present ? values.codriverName : "absent",
-    };
-    console.log(valuesData);
+    setLoading(true);
+    try {
+      form.resetFields();
+      const valuesData = {
+        ...values,
+        date: date,
+        codriverName: present ? values.codriverName : "absent",
+        createdBy: user,
+      };
+      console.log(valuesData);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Log saved successfully",
+      });
+    } catch (error) {
+      console.log(error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.error
+          ? error.response.data.error
+          : "An Unexpected error occured. Please try again later";
+      Swal.fire({ icon: "warning", title: "Error", text: errorMessage });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -139,7 +161,7 @@ function LogTrip() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding:'0px 30px'
+                  padding: "0px 30px",
                 }}
               >
                 <div
@@ -312,8 +334,20 @@ function LogTrip() {
                 <ELDGrid eldData={eldData} />
               </div> */}
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="log-button">
-                  Submit
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: "30%",
+                    padding: "15px",
+                    fontSize: "16px",
+                    borderRadius: "12px",
+                    border: "none",
+                  }}
+                  loading={loading}
+                  disabled={loading ? true : false}
+                >
+                  {loading ? "Submitting" : "Submit"}
                 </Button>
               </Form.Item>
             </Form>

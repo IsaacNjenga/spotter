@@ -1,25 +1,32 @@
 import { Button, Typography } from "antd";
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/home.css";
 import LogsToday from "../components/logsToday";
-import { UserContext } from "../App";
+import UseTodaysLog from "../assets/hooks/useTodaysLog";
 
 const { Title, Text } = Typography;
 
 function Home() {
-  const { isMobile } = useContext(UserContext);
+  const { log } = UseTodaysLog();
   return (
     <>
       <div className="home-bg">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            gap: "10px",
-            justifyContent: "space-around",
-          }}
-        >
+        {log !== [] ? (
+          <div
+            style={{
+              margin: "0px auto",
+              width: "100%",
+              padding: "10px 15px",
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "12px",
+              flex: 1,
+            }}
+          >
+            <LogsToday />
+          </div>
+        ) : (
           <div
             style={{
               padding: "10px 25px",
@@ -64,22 +71,12 @@ function Home() {
                 }}
               >
                 <Link to="/log-location" style={{ color: "white" }}>
-                  Log Your Location
+                  Log Your Details
                 </Link>
               </Button>
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              
-              flex: 1,
-            }}
-          >
-            <LogsToday />
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

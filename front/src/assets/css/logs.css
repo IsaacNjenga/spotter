@@ -58,11 +58,7 @@
   padding: 15px;
   font-size: 16px;
   border-radius: 8px;
-  background: #725b43;
   border: none;
   transition: background 0.3s ease-in-out;
 }
 
-.log-button:hover {
-  background: #5a472e;
-}

@@ -1,7 +1,8 @@
 import React from "react";
 import UseTodaysLog from "../assets/hooks/useTodaysLog";
-import { Descriptions, Spin, Typography, Card, List } from "antd";
+import { Descriptions, Spin, Typography, Card, List, Button } from "antd";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -37,9 +38,33 @@ function LogsToday() {
                   borderRadius: "12px",
                 }}
               >
-                <Title level={2} style={styles.heading}>
-                  Trip Log Today
-                </Title>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>
+                    <Title level={2} style={styles.heading}>
+                      Trip Log Today
+                    </Title>
+                  </div>
+                  <div>
+                    <Button
+                      type="primary"
+                      style={{
+                        marginTop: "10px",
+                        padding: "20px 30px",
+                        fontFamily: "Roboto",
+                      }}
+                    >
+                      <Link to={`/update-log/${log._id}`}>
+                        Log Your Details
+                      </Link>{" "}
+                    </Button>
+                  </div>
+                </div>
                 <Card style={styles.card}>
                   <Descriptions bordered column={2}>
                     <Descriptions.Item label="Pickup Location">
@@ -48,7 +73,7 @@ function LogsToday() {
 
                     <Descriptions.Item label="Pickup Time">
                       <Text style={styles.text}>
-                      {formatTime(log.pickupTime)}
+                        {formatTime(log.pickupTime)}
                       </Text>
                     </Descriptions.Item>
 

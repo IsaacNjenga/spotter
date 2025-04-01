@@ -18,7 +18,7 @@ router.post("/login", login);
 router.post("/create-log", createLog);
 router.get("/get-all-logs", fetchLogs);
 router.get("/get-log", fetchLog);
-router.put("/update-log", updateLog);
+router.put("/update-log/:id", updateLog);
 
 //reverse Geocode route
 router.get("/geocode", reverseGeocode);

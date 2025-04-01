@@ -121,10 +121,10 @@ function CurrentLog({
     {
       title: "Current Location",
       dataIndex: "currentLocation",
-      render: (_, record, index) => (
-        <Space.Compact style={{ width: "100%" }}>
+      render: (_, record, index) => {
+        return (
           <Input
-            value={record.currentLocation}
+            value={record?.currentLocation || ""}
             onChange={(e) =>
               handleCurrentChange(index, "currentLocation", e.target.value)
             }
@@ -132,10 +132,9 @@ function CurrentLog({
             style={inputStyle}
             required
           />
-        </Space.Compact>
-      ),
+        );
+      },
     },
-
     {
       title: "Set Time",
       dataIndex: "currentTime",
@@ -186,12 +185,15 @@ function CurrentLog({
     <>
       <Table
         columns={columns}
-        dataSource={values.currentLocations}
+        dataSource={
+          values.currentLocations.length > 0 ? values.currentLocations : []
+        }
         pagination={false}
         bordered
-        rowKey={(record, index) => index}
+        rowKey={(record) => record.key}
         style={{ marginTop: "20px" }}
       />
+
       <Button
         type="dashed"
         onClick={addNewRow}
@@ -206,19 +208,3 @@ function CurrentLog({
 }
 
 export default CurrentLog;
-
-// const initialValues = {
-//     currentLocations: [
-//       {
-//         currentCoordinates: { lat: -1.2471951, lng: 36.6790986 },
-//         currentLocation: "unnamed road, Kinoo ward, 12345, Kenya",
-//         currentTime: "03:00",
-//         key: 1743155574824,
-//       },
-//       { currentLocation: "Ngong", currentTime: "06:00", key: 1743155583969 },
-//     ],
-//     dropoffLocation: "Kiambu",
-//     pickupLocation: "Nairobi",
-//     pickupTime: "2025-03-28T03:00:00Z",
-//     dropoffTime: "2025-03-28T23:00:00Z",
-//   };

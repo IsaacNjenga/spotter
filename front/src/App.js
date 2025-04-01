@@ -8,6 +8,7 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import LocationLog from "./pages/locationLog";
 import Logs from "./pages/logs.js";
+import UpdateLog from "./pages/updateLog";
 
 const cookies = new Cookies();
 
@@ -47,6 +48,7 @@ function App() {
             <Route path="log-trip" element={<LogTrip />} />
             <Route path="log-location" element={<LocationLog />} />
             <Route path="logs" element={<Logs />} />
+            <Route path="update-log/:id" element={<UpdateLog />} />
           </Route>
         </Routes>
       </BrowserRouter>

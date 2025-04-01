@@ -58,7 +58,18 @@ const fetchLog = async (req, res) => {
 };
 
 const updateLog = async (req, res) => {
+  const id = req.params;
+  if (!id) {
+    return res.status(400).json({ error: "No ID specified" });
+  }
   try {
+    const objectId = new mongoose.Types.ObjectId(id)
+    const updatedLog = await LogsModel.findByIdAndUpdate(
+      { _id: objectId },
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(201).json({ success: true, updatedLog });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error.message });

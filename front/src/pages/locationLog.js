@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
+import UpdateLog from "./updateLog";
 
 const initialValues = {
   currentLocations: [],
@@ -64,25 +65,15 @@ function LocationLog() {
     }
   };
 
-  // const onDateChange = (name, date) => {
-  //   if (date) {
-  //     const selectedDate = format(
-  //       dayjs(date).toDate(),
-  //       "yyyy-MM-dd'T'HH:mm:ss'Z'"
-  //     );
-  //     setValues((prev) => ({ ...prev, [name]: selectedDate }));
-  //   }
-  // };
-
   const onDateChange = (name, date) => {
     if (date) {
       setValues((prev) => ({
         ...prev,
-        [name]: dayjs(date).toDate(), 
+        [name]: dayjs(date).toDate(),
       }));
     }
   };
-  
+
   const handleCurrentChange = (index, field, value) => {
     setValues((prevValues) => {
       const updatedLocations = [...prevValues.currentLocations];
@@ -135,116 +126,125 @@ function LocationLog() {
   };
 
   return (
-    <Card style={cardStyle}>
-      <Typography.Title level={3} style={{ textAlign: "center" }}>
-        Location Logger
-      </Typography.Title>
-      <Form
-        layout="vertical"
-        form={form}
-        onFinish={handleSubmit}
-        initialValues={values}
-      >
-        <Divider>Pick Up Details</Divider>
-        <div style={{ display: "flex", gap: "30px" }}>
-          <Form.Item
-            label={<span style={labelStyle}>Pickup Date</span>}
-            name="pickupDate"
-            layout="horizontal"
-          >
-            <DatePicker
-              onChange={(date) => onDateChange("pickupDate", date)}
-              value={values.pickupDate ? dayjs(values.pickupDate) : null}
-            />
-          </Form.Item>
-          <Form.Item
-            label={<span style={labelStyle}>Pickup Time</span>}
-            name="pickupTime"
-            layout="horizontal"
-          >
-            <TimePicker
-              value={
-                values.pickupTime ? dayjs(values.pickupTime, "HH:mm") : null
-              }
-              onChange={(value) => handleTimeChange("pickupTime", value)}
-              defaultOpenValue={dayjs("00:00", "HH:mm")}
-              style={inputStyle}
-            />
-          </Form.Item>{" "}
-        </div>
-        <Form.Item
-          label={<span style={labelStyle}>Pickup Location</span>}
-          name="pickupLocation"
+    <>
+      <Card style={cardStyle}>
+        <Typography.Title level={3} style={{ textAlign: "center" }}>
+          Location Logger
+        </Typography.Title>
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={values}
         >
-          <Input
-            value={values.pickupLocation}
-            onChange={(e) => handleChange("pickupLocation", e.target.value)}
-            placeholder="Enter pickup location"
-            style={inputStyle}
-          />
-        </Form.Item>
-        <Divider>Current Location Details</Divider>
-        <CurrentLog
-          initialValues={initialValues}
-          setValues={setValues}
-          values={values}
-          handleCurrentChange={handleCurrentChange}
-          inputStyle={inputStyle}
-          handleCurrentTimeChange={handleCurrentTimeChange}
-          buttonStyle={buttonStyle}
-          address={address}
-        />
-        <Divider>Drop Off Details</Divider>{" "}
-        <div style={{ display: "flex", gap: "30px" }}>
+          <Divider>Pick Up Details</Divider>
+          <div style={{ display: "flex", gap: "30px" }}>
+            <Form.Item
+              label={<span style={labelStyle}>Pickup Date</span>}
+              name="pickupDate"
+              layout="horizontal"
+            >
+              <DatePicker
+                onChange={(date) => onDateChange("pickupDate", date)}
+                value={values.pickupDate ? dayjs(values.pickupDate) : null}
+              />
+            </Form.Item>
+            <Form.Item
+              label={<span style={labelStyle}>Pickup Time</span>}
+              name="pickupTime"
+              layout="horizontal"
+            >
+              <TimePicker
+                value={
+                  values.pickupTime ? dayjs(values.pickupTime, "HH:mm") : null
+                }
+                onChange={(value) => handleTimeChange("pickupTime", value)}
+                defaultOpenValue={dayjs("00:00", "HH:mm")}
+                style={inputStyle}
+              />
+            </Form.Item>{" "}
+          </div>
           <Form.Item
-            label={<span style={labelStyle}>Dropoff Date</span>}
-            name="dropoffDate"
-            layout="horizontal"
+            label={<span style={labelStyle}>Pickup Location</span>}
+            name="pickupLocation"
           >
-            <DatePicker
-              onChange={(date) => onDateChange("dropoffDate", date)}
-              value={values.dropoffDate ? dayjs(values.dropoffDate) : null}
-            />
-          </Form.Item>
-          <Form.Item
-            label={<span style={labelStyle}>Dropoff Time</span>}
-            name="dropoffTime"
-            layout="horizontal"
-          >
-            <TimePicker
-              value={
-                values.dropoffTime ? dayjs(values.dropoffTime, "HH:mm") : null
-              }
-              onChange={(value) => handleTimeChange("dropoffTime", value)}
-              defaultOpenValue={dayjs("00:00", "HH:mm")}
+            <Input
+              value={values.pickupLocation}
+              onChange={(e) => handleChange("pickupLocation", e.target.value)}
+              placeholder="Enter pickup location"
               style={inputStyle}
             />
           </Form.Item>
-        </div>
-        <Form.Item
-          label={<span style={labelStyle}>Dropoff Location</span>}
-          name="dropoffLocation"
-        >
-          <Input
-            value={values.dropoffLocation}
-            onChange={(e) => handleChange("dropoffLocation", e.target.value)}
-            placeholder="Enter dropoff location"
-            style={inputStyle}
+          <Divider>Current Location Details</Divider>
+          <CurrentLog
+            initialValues={initialValues}
+            setValues={setValues}
+            values={values}
+            handleCurrentChange={handleCurrentChange}
+            inputStyle={inputStyle}
+            handleCurrentTimeChange={handleCurrentTimeChange}
+            buttonStyle={buttonStyle}
+            address={address}
           />
-        </Form.Item>
-        <Divider />
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={buttonStyle}
-            loading={loading}
+          <Divider>Drop Off Details</Divider>{" "}
+          <div style={{ display: "flex", gap: "30px" }}>
+            <Form.Item
+              label={<span style={labelStyle}>Dropoff Date</span>}
+              name="dropoffDate"
+              layout="horizontal"
+            >
+              <DatePicker
+                onChange={(date) => onDateChange("dropoffDate", date)}
+                value={values.dropoffDate ? dayjs(values.dropoffDate) : null}
+              />
+            </Form.Item>
+            <Form.Item
+              label={<span style={labelStyle}>Dropoff Time</span>}
+              name="dropoffTime"
+              layout="horizontal"
+            >
+              <TimePicker
+                value={
+                  values.dropoffTime ? dayjs(values.dropoffTime, "HH:mm") : null
+                }
+                onChange={(value) => handleTimeChange("dropoffTime", value)}
+                defaultOpenValue={dayjs("00:00", "HH:mm")}
+                style={inputStyle}
+              />
+            </Form.Item>
+          </div>
+          <Form.Item
+            label={<span style={labelStyle}>Dropoff Location</span>}
+            name="dropoffLocation"
           >
-            {loading ? "Saving Log. Please wait" : "Save Log"}
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+            <Input
+              value={values.dropoffLocation}
+              onChange={(e) => handleChange("dropoffLocation", e.target.value)}
+              placeholder="Enter dropoff location"
+              style={inputStyle}
+            />
+          </Form.Item>
+          <Divider />
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={buttonStyle}
+              loading={loading}
+            >
+              {loading ? "Saving Log. Please wait" : "Save Log"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+      <UpdateLog
+        labelStyle={labelStyle}
+        inputStyle={inputStyle}
+        cardStyle={cardStyle}
+        buttonStyle={buttonStyle}
+        initialValues={initialValues}
+      />
+    </>
   );
 }
 
