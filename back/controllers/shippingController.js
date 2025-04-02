@@ -20,7 +20,7 @@ const fetchShippingLogs = async (req, res) => {
       .json({ error: "No ID specified. Contact your technician" });
   }
   try {
-    const objectId = new mongoose.Types.objectId(id);
+    const objectId = new mongoose.Types.ObjectId(id);
     const shippingLogs = await ShippingModel.find({ createdBy: objectId });
     res.status(201).json({ success: true, shippingLogs });
   } catch (error) {

@@ -5,10 +5,10 @@ import "vis-timeline/styles/vis-timeline-graph2d.min.css";
 import UseTodaysLog from "../assets/hooks/useTodaysLog";
 import dayjs from "dayjs";
 
-const ELDTimeline = () => {
+const ELDTimeline = ({ log, logLoading }) => {
   const timelineRef = useRef(null);
   const timelineInstance = useRef(null);
-  const { log, logLoading } = UseTodaysLog();
+  // const { log, logLoading } = UseTodaysLog();
 
   useEffect(() => {
     if (!log || logLoading || !log[0]?.currentLocations) return;

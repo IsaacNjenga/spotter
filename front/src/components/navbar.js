@@ -53,6 +53,7 @@ function Navbar() {
     { label: "Home", path: "/" },
     { label: "Shipping Log", path: "/log-trip" },
     { label: "All Logs", path: "/logs" },
+    { label: "Map", path: "/map" },
   ];
 
   const toggleDrawer = () => setDrawerVisible(!drawerVisible);

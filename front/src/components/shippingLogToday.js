@@ -15,6 +15,7 @@ import ELDTimeline from "./grid";
 import { format } from "date-fns";
 import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import UseTodaysLog from "../assets/hooks/useTodaysLog";
 
 const initialValues = {
   carrierName: "",
@@ -35,6 +36,7 @@ function ShippingLogToday() {
   const { shippingLog, shippingLoading } = UseShippingLogs();
   const [present, setPresent] = useState(false);
   const [values, setValues] = useState(initialValues);
+  const { log, logLoading } = UseTodaysLog();
 
   React.useEffect(() => {
     if (shippingLog.length > 0) {
@@ -294,7 +296,7 @@ function ShippingLogToday() {
               </div>
             </div>
             <div>
-              <ELDTimeline />
+              <ELDTimeline log={log} logLoading={logLoading} />
             </div>
           </Form>
         </Card>
