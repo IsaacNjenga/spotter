@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Button,
   Card,
@@ -7,14 +7,16 @@ import {
   Form,
   Input,
   InputNumber,
+  Radio,
   Spin,
 } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../App";
+import { format } from "date-fns";
+import axios from "axios";
+import Swal from "sweetalert2";
 import UseShippingLogs from "../assets/hooks/useShippingLogs";
 import dayjs from "dayjs";
-import ELDTimeline from "./grid";
-import { format } from "date-fns";
-import { EditOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   carrierName: "",
@@ -29,50 +31,15 @@ const initialValues = {
   vehicleNumber: "",
 };
 
-const eldData = [
-  {
-    currentMode: "Off-Duty",
-    startTime: "2025-03-25T00:00:00Z",
-    endTime: "2025-03-25T08:00:00Z",
-  },
-  {
-    currentMode: "On-Duty",
-    startTime: "2025-03-25T08:00:00Z",
-    endTime: "2025-03-25T12:00:00Z",
-  },
-  {
-    currentMode: "Driving",
-    startTime: "2025-03-25T12:00:00Z",
-    endTime: "2025-03-25T16:00:00Z",
-  },
-  {
-    currentMode: "Sleeper Berth",
-    startTime: "2025-03-25T16:00:00Z",
-    endTime: "2025-03-25T20:00:00Z",
-  },
-  {
-    currentMode: "On-Duty",
-    startTime: "2025-03-25T20:00:00Z",
-    endTime: "2025-03-25T22:00:00Z",
-  },
-  {
-    currentMode: "Driving",
-    startTime: "2025-03-25T22:00:00Z",
-    endTime: "2025-03-26T01:00:00Z",
-  },
-  {
-    currentMode: "Off-Duty",
-    startTime: "2025-03-26T01:00:00Z",
-    endTime: "2025-03-26T08:00:00Z",
-  },
-];
-
-function ShippingLogToday() {
-  const [form] = Form.useForm();
+function UpdateShippingLog() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { shippingLog, shippingLoading } = UseShippingLogs();
-  const [present, setPresent] = useState(false);
+  const { user } = useContext(UserContext);
   const [values, setValues] = useState(initialValues);
+  const [present, setPresent] = useState(false);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const { shippingLog, shippingLoading } = UseShippingLogs();
 
   React.useEffect(() => {
     if (shippingLog.length > 0) {
@@ -103,43 +70,65 @@ function ShippingLogToday() {
     }
   }, [form, shippingLog]);
 
-  const today = new Date();
-
-  const toUpdate = () => {
-    navigate(`/update-shipping-log/${shippingLog[0]?._id}`);
+  const handleChange = (name, value) => {
+    setValues((prev) => ({ ...prev, [name]: value }));
   };
 
+  const onDateChange = (name, date) => {
+    if (date) {
+      setValues((prev) => ({
+        ...prev,
+        [name]: dayjs(date).toDate(),
+      }));
+    }
+  };
+
+  const handleRadioChange = (e) => {
+    if (e.target.value === "present") {
+      setPresent(true);
+    } else if (e.target.value === "absent") {
+      setPresent(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const valuesData = {
+        ...values,
+        codriverName: present ? values.codriverName : "absent",
+        createdBy: user,
+      };
+      // console.log(valuesData);
+      const res = await axios.put(`update-shipping-log/${id}`, valuesData);
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Log saved successfully",
+        });
+        form.resetFields();
+        setValues([]);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.error
+          ? error.response.data.error
+          : "An Unexpected error occured. Please try again later";
+      Swal.fire({ icon: "warning", title: "Error", text: errorMessage });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       {shippingLoading ? (
-        <Spin size="large " style={{ display: "block", margin: "50px auto" }} />
+        <Spin size="large" style={{ display: "block", margin: "50px auto" }} />
       ) : (
         <Card
-          title={
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <div style={{ flex: 1 }}>
-                <p>
-                  Shipping Log: {format(new Date(today), "EEEE, do MMMM yyyy")}
-                </p>
-              </div>
-              <div style={{ margin: "10px 10px" }}>
-                <Button
-                  type="primary"
-                  title="Edit"
-                  icon={<EditOutlined />}
-                  onClick={toUpdate}
-                >
-                  Edit
-                </Button>
-              </div>
-            </div>
-          }
+          title="Update Driver's Daily Log"
           className="log-card"
           style={{
             margin: "0px auto",
@@ -148,18 +137,24 @@ function ShippingLogToday() {
             width: "100%",
           }}
         >
-          <Form form={form} layout="vertical" initialValues={values}>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={values}
+          >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
+              {/* Date */}
               <Form.Item
                 label={<p className="log-label">Date</p>}
                 name="date"
+                rules={[{ required: true, message: "This field is required" }]}
                 layout="horizontal"
               >
                 <DatePicker
-                  value={values.date}
+                  onChange={(date) => onDateChange("date", date)}
+                  value={values?.date ? dayjs(values.date) : null}
                   className="log-input"
-                  readOnly
-                  disabled
                 />
               </Form.Item>
               {/* From - to */}
@@ -178,7 +173,11 @@ function ShippingLogToday() {
                   ]}
                   layout="horizontal"
                 >
-                  <Input value={values.from} className="log-input" readOnly />
+                  <Input
+                    value={values.from}
+                    onChange={(e) => handleChange("from", e.target.value)}
+                    className="log-input"
+                  />
                 </Form.Item>{" "}
                 <Form.Item
                   label={<p className="log-label">To</p>}
@@ -188,7 +187,11 @@ function ShippingLogToday() {
                   ]}
                   layout="horizontal"
                 >
-                  <Input value={values.to} className="log-input" readOnly />
+                  <Input
+                    value={values.to}
+                    onChange={(e) => handleChange("to", e.target.value)}
+                    className="log-input"
+                  />
                 </Form.Item>
               </div>
             </div>
@@ -228,8 +231,11 @@ function ShippingLogToday() {
                   >
                     <InputNumber
                       value={values.totalMilesToday}
+                      min={1}
+                      onChange={(value) =>
+                        handleChange("totalMilesToday", value)
+                      }
                       className="log-input"
-                      readOnly
                     />
                   </Form.Item>{" "}
                   <Form.Item
@@ -241,8 +247,11 @@ function ShippingLogToday() {
                   >
                     <InputNumber
                       value={values.totalMileageToday}
+                      min={1}
+                      onChange={(value) =>
+                        handleChange("totalMileageToday", value)
+                      }
                       className="log-input"
-                      readOnly
                     />
                   </Form.Item>
                 </div>
@@ -262,13 +271,35 @@ function ShippingLogToday() {
                     <InputNumber
                       value={values.vehicleNumber}
                       min={1}
+                      onChange={(value) => handleChange("vehicleNumber", value)}
                       className="log-input"
                       style={{ width: "70%" }}
-                      readOnly
                     />
                   </Form.Item>
                 </div>
                 <div>
+                  <Form.Item
+                    label={<span className="log-label">Co-Driver</span>}
+                    layout="horizontal"
+                  >
+                    <Radio.Group
+                      onChange={handleRadioChange}
+                      defaultValue="absent"
+                    >
+                      <Radio.Button
+                        value="present"
+                        style={{ fontFamily: "Roboto" }}
+                      >
+                        Present
+                      </Radio.Button>
+                      <Radio.Button
+                        value="absent"
+                        style={{ fontFamily: "Roboto" }}
+                      >
+                        Absent
+                      </Radio.Button>
+                    </Radio.Group>
+                  </Form.Item>
                   {present && (
                     <Form.Item
                       label={<p className="log-label">Name of Co-Driver</p>}
@@ -280,9 +311,11 @@ function ShippingLogToday() {
                     >
                       <Input
                         value={values.codriverName}
+                        onChange={(e) =>
+                          handleChange("codriverName", e.target.value)
+                        }
                         className="log-input"
                         style={{ width: "70%" }}
-                        readOnly
                       />
                     </Form.Item>
                   )}
@@ -299,8 +332,10 @@ function ShippingLogToday() {
                 >
                   <Input
                     value={values.carrierName}
+                    onChange={(e) =>
+                      handleChange("carrierName", e.target.value)
+                    }
                     className="log-input"
-                    readOnly
                   />
                 </Form.Item>{" "}
                 <Form.Item
@@ -312,8 +347,10 @@ function ShippingLogToday() {
                 >
                   <Input
                     value={values.officeAddress}
+                    onChange={(e) =>
+                      handleChange("officeAddress", e.target.value)
+                    }
                     className="log-input"
-                    readOnly
                   />
                 </Form.Item>{" "}
                 <Form.Item
@@ -325,15 +362,31 @@ function ShippingLogToday() {
                 >
                   <Input
                     value={values.terminalAddress}
+                    onChange={(e) =>
+                      handleChange("terminalAddress", e.target.value)
+                    }
                     className="log-input"
-                    readOnly
                   />
                 </Form.Item>
               </div>
             </div>
-            <div>
-              <ELDTimeline eldData={eldData} />
-            </div>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  width: "30%",
+                  padding: "15px",
+                  fontSize: "16px",
+                  borderRadius: "12px",
+                  border: "none",
+                }}
+                loading={loading}
+                disabled={loading ? true : false}
+              >
+                {loading ? "Updating" : "Update"}
+              </Button>
+            </Form.Item>
           </Form>
         </Card>
       )}
@@ -341,4 +394,4 @@ function ShippingLogToday() {
   );
 }
 
-export default ShippingLogToday;
+export default UpdateShippingLog;

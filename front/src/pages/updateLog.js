@@ -29,7 +29,26 @@ const initialValues = {
   dropoffDate: "",
 };
 
-function UpdateLog({ labelStyle, inputStyle, cardStyle, buttonStyle }) {
+const labelStyle = { fontFamily: "Raleway", fontWeight: 600 };
+const inputStyle = {
+  fontFamily: "Roboto",
+  borderRadius: "8px",
+};
+const buttonStyle = {
+  borderRadius: "8px",
+  fontWeight: 600,
+};
+const cardStyle = {
+  background: "#fff",
+  maxWidth: 900,
+  margin: "20px auto",
+  padding: "20px",
+  borderRadius: "12px",
+  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+};
+
+
+function UpdateLog() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { log, logLoading } = UseTodaysLog();

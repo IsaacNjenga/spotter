@@ -237,13 +237,7 @@ function LocationLog() {
           </Form.Item>
         </Form>
       </Card>
-      <UpdateLog
-        labelStyle={labelStyle}
-        inputStyle={inputStyle}
-        cardStyle={cardStyle}
-        buttonStyle={buttonStyle}
-        initialValues={initialValues}
-      />
+    
     </>
   );
 }

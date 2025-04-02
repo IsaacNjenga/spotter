@@ -9,6 +9,7 @@ import Cookies from "universal-cookie";
 import LocationLog from "./pages/locationLog";
 import Logs from "./pages/logs.js";
 import UpdateLog from "./pages/updateLog";
+import UpdateShippingLog from "./pages/updateShippingLog";
 
 const cookies = new Cookies();
 
@@ -49,6 +50,10 @@ function App() {
             <Route path="log-location" element={<LocationLog />} />
             <Route path="logs" element={<Logs />} />
             <Route path="update-log/:id" element={<UpdateLog />} />
+            <Route
+              path="update-shipping-log/:id"
+              element={<UpdateShippingLog />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

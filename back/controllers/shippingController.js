@@ -59,7 +59,7 @@ const updateShippingLog = async (req, res) => {
   }
   try {
     const objectId = new mongoose.Types.ObjectId(id);
-    const updatedShippingLog = await LogsModel.findByIdAndUpdate(
+    const updatedShippingLog = await ShippingModel.findByIdAndUpdate(
       { _id: objectId },
       { $set: req.body },
       { new: true }

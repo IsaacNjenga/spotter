@@ -25,7 +25,8 @@ const initialValues = {
   officeAddress: "",
   from: "",
   to: "",
-  terminalAddress: "",vehicleNumber:''
+  terminalAddress: "",
+  vehicleNumber: "",
 };
 
 function LogTrip() {
@@ -68,7 +69,6 @@ function LogTrip() {
         codriverName: present ? values.codriverName : "absent",
         createdBy: user,
       };
-      console.log(valuesData);
       const res = await axios.post("create-shipping-log", valuesData);
       if (res.data.success) {
         Swal.fire({
@@ -152,6 +152,7 @@ function LogTrip() {
                       { required: true, message: "This field is required" },
                     ]}
                     layout="horizontal"
+                    
                   >
                     <Input
                       value={values.to}
@@ -229,19 +230,20 @@ function LogTrip() {
                           Plate(s)/State (show each unit)
                         </p>
                       }
-                      name="vehicleNumbers"
+                      name="vehicleNumber"
                       rules={[
                         { required: true, message: "This field is required" },
                       ]}
                     >
                       <InputNumber
-                        value={values.vehicleNumbers}
+                        value={values.vehicleNumber}
                         min={1}
                         onChange={(value) =>
-                          handleChange("vehicleNumbers", value)
+                          handleChange("vehicleNumber", value)
                         }
                         className="log-input"
                         style={{ width: "70%" }}
+                        
                       />
                     </Form.Item>
                   </div>

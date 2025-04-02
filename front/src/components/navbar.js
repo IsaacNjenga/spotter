@@ -51,7 +51,7 @@ function Navbar() {
 
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Daily Log", path: "/log-trip" },
+    { label: "Shipping Log", path: "/log-trip" },
     { label: "All Logs", path: "/logs" },
   ];
 
