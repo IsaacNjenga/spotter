@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import { DataSet } from "vis-data";
 import { Timeline } from "vis-timeline/standalone";
 import "vis-timeline/styles/vis-timeline-graph2d.min.css";
-import UseTodaysLog from "../assets/hooks/useTodaysLog";
 import dayjs from "dayjs";
 
 const ELDTimeline = ({ log, logLoading }) => {

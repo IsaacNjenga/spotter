@@ -3,7 +3,7 @@ import UseAllShippingLogs from "../assets/hooks/useAllShippingLogs";
 import { Card, Descriptions, Spin, Typography, Collapse } from "antd";
 import { format } from "date-fns";
 import { CaretRightOutlined } from "@ant-design/icons";
-import ELDTimeline from "../components/grid";
+//import ELDTimeline from "../components/grid";
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;

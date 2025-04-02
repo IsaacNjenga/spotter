@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Button } from "antd";
 import {
   GoogleMap,
@@ -6,55 +6,37 @@ import {
   Marker,
   Polyline,
   InfoWindow,
-  DirectionsRenderer,
-  DirectionsService,
 } from "@react-google-maps/api";
 
-// Define the locations (coordinates) for each stop
+// Define stops with coordinates and labels
 const locations = [
-  { lat: -1.2582912, lng: 36.78208 },
-  { lat: -1.2206103, lng: 36.85534588 },
-  { lat: -1.2351234, lng: 36.7901234 },
-  { lat: -1.2682912, lng: 36.7408 },
-  { lat: -1.2482912, lng: 36.658208 },
-  { lat: -1.2282912, lng: 36.92208 },
+  { lat: -1.2582912, lng: 36.78208, title: "Start" },
+  { lat: -1.2206103, lng: 36.85534588, title: "Second Stop" },
+  { lat: -1.2351234, lng: 36.7901234, title: "Third Stop" },
+  { lat: -1.2682912, lng: 36.7408, title: "Fourth Stop" },
+  { lat: -1.2482912, lng: 36.658208, title: "Fifth Stop" },
+  { lat: -1.2282912, lng: 36.92208, title: "Final Stop" },
 ];
+
+// Define different colors for each stop
+const colors = [
+  "#FF0000",
+  "#0000FF",
+  "#008000",
+  "#FFA500",
+  "#800080",
+  "#FF1493",
+];
+
+const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 function MapWithMultipleStops() {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyBKdS460pbtW4C0g5FvKZ7gDWQJNT7Oz0s", // Replace with your Google Maps API key
+    googleMapsApiKey: apiKey,
   });
-  const [directions, setDirections] = useState(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeMarker, setActiveMarker] = useState(null); // Track active marker
-
-  // Function to calculate directions for multiple stops
-  useEffect(() => {
-    if (isLoaded) {
-      const directionsService = new window.google.maps.DirectionsService();
-      const origin = locations[0];
-      const destination = locations[locations.length - 1];
-      const waypoints = locations.slice(1, locations.length - 1).map((loc) => ({
-        location: new window.google.maps.LatLng(loc.lat, loc.lng),
-        stopover: true,
-      }));
-
-      const request = {
-        origin: new window.google.maps.LatLng(origin.lat, origin.lng),
-        destination: new window.google.maps.LatLng(destination.lat, destination.lng),
-        waypoints: waypoints,
-        travelMode: window.google.maps.TravelMode.DRIVING, // or WALKING, BICYCLING, etc.
-      };
-
-      directionsService.route(request, (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          setDirections(result);
-        } else {
-          console.error("Directions request failed due to: " + status);
-        }
-      });
-    }
-  }, [isLoaded]);
+  const [activeMarker, setActiveMarker] = useState(null);
 
   if (!isLoaded) return <div>Loading...</div>;
 
@@ -70,38 +52,51 @@ function MapWithMultipleStops() {
         footer={null}
         width={900}
       >
-        <div>
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            zoom={14}
-            center={locations[0]}
-          >
-            {/* Display markers for each location with titles */}
-            {locations.map((loc, index) => (
-              <Marker key={index} position={loc} onClick={() => setActiveMarker(index)}>
-                {/* Show InfoWindow for the active marker */}
-                {activeMarker === index && (
-                  <InfoWindow position={loc} onCloseClick={() => setActiveMarker(null)}>
-                    <div>{`Stop ${index + 1}`}</div> {/* Title for each stop */}
-                  </InfoWindow>
-                )}
-              </Marker>
-            ))}
+        <GoogleMap
+          mapContainerStyle={{ width: "100%", height: "500px" }}
+          zoom={12}
+          center={locations[0]}
+        >
+          {/* Display markers for each location */}
+          {locations.map((loc, index) => (
+            <Marker
+              key={index}
+              position={loc}
+              icon={{
+                url: `http://maps.google.com/mapfiles/ms/icons/${
+                  index === 0
+                    ? "red"
+                    : index === locations.length - 1
+                    ? "green"
+                    : "blue"
+                }-dot.png`,
+              }}
+              onClick={() => setActiveMarker(index)}
+            >
+              {activeMarker === index && (
+                <InfoWindow
+                  position={loc}
+                  onCloseClick={() => setActiveMarker(null)}
+                >
+                  <div>{loc.title}</div>
+                </InfoWindow>
+              )}
+            </Marker>
+          ))}
 
-            {/* Create a polyline (trail) connecting the locations */}
+          {/* Draw colored lines between stops */}
+          {locations.slice(0, locations.length - 1).map((loc, index) => (
             <Polyline
-              path={locations}
+              key={index}
+              path={[loc, locations[index + 1]]} // Draw line from current stop to next stop
               options={{
-                strokeColor: "#FF0000", // Trail color
+                strokeColor: colors[index], // Different color for each segment
                 strokeOpacity: 1.0,
-                strokeWeight: 3,
+                strokeWeight: 4,
               }}
             />
-
-            {/* Render the directions (route) between the stops */}
-            {directions && <DirectionsRenderer directions={directions} />}
-          </GoogleMap>
-        </div>
+          ))}
+        </GoogleMap>
       </Modal>
     </>
   );
