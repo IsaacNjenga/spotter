@@ -16,7 +16,6 @@ import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
-import UpdateLog from "./updateLog";
 
 const initialValues = {
   currentLocations: [],

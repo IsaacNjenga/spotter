@@ -93,16 +93,15 @@ const Logs = () => {
                             }
                             description={
                               <Text type="secondary">
-                                  {location.currentStartTime
+                                {location.currentStartTime
                                   ? `Time: ${formatTime(
                                       location.currentStartTime
                                     )}`
-                                  : "No time available"} - {" "}
-                                  {location.currentEndTime
-                                    ? `${formatTime(
-                                        location.currentEndTime
-                                      )}`
-                                    : "No time available"}
+                                  : "No time available"}{" "}
+                                -{" "}
+                                {location.currentEndTime
+                                  ? `${formatTime(location.currentEndTime)}`
+                                  : "No time available"}
                               </Text>
                             }
                           />
@@ -126,9 +125,9 @@ const Logs = () => {
 
 const styles = {
   container: {
-    maxWidth: "900px",
+    maxWidth: "1000px",
     margin: "auto",
-    padding: "40px 20px",
+    padding: "5px 20px",
   },
   heading: {
     fontFamily: "Raleway",

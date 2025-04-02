@@ -29,44 +29,6 @@ const initialValues = {
   vehicleNumber: "",
 };
 
-const eldData = [
-  {
-    currentMode: "Off-Duty",
-    startTime: "2025-03-25T00:00:00Z",
-    endTime: "2025-03-25T08:00:00Z",
-  },
-  {
-    currentMode: "On-Duty",
-    startTime: "2025-03-25T08:00:00Z",
-    endTime: "2025-03-25T12:00:00Z",
-  },
-  {
-    currentMode: "Driving",
-    startTime: "2025-03-25T12:00:00Z",
-    endTime: "2025-03-25T16:00:00Z",
-  },
-  {
-    currentMode: "Sleeper Berth",
-    startTime: "2025-03-25T16:00:00Z",
-    endTime: "2025-03-25T20:00:00Z",
-  },
-  {
-    currentMode: "On-Duty",
-    startTime: "2025-03-25T20:00:00Z",
-    endTime: "2025-03-25T22:00:00Z",
-  },
-  {
-    currentMode: "Driving",
-    startTime: "2025-03-25T22:00:00Z",
-    endTime: "2025-03-26T01:00:00Z",
-  },
-  {
-    currentMode: "Off-Duty",
-    startTime: "2025-03-26T01:00:00Z",
-    endTime: "2025-03-26T08:00:00Z",
-  },
-];
-
 function ShippingLogToday() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -332,7 +294,7 @@ function ShippingLogToday() {
               </div>
             </div>
             <div>
-              <ELDTimeline eldData={eldData} />
+              <ELDTimeline />
             </div>
           </Form>
         </Card>

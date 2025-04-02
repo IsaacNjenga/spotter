@@ -7,9 +7,9 @@ import Auth from "./pages/auth";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import LocationLog from "./pages/locationLog";
-import Logs from "./pages/logs.js";
 import UpdateLog from "./pages/updateLog";
 import UpdateShippingLog from "./pages/updateShippingLog";
+import AllLogs from "./pages/allLogs";
 
 const cookies = new Cookies();
 
@@ -48,7 +48,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="log-trip" element={<LogTrip />} />
             <Route path="log-location" element={<LocationLog />} />
-            <Route path="logs" element={<Logs />} />
+            <Route path="logs" element={<AllLogs />} />
             <Route path="update-log/:id" element={<UpdateLog />} />
             <Route
               path="update-shipping-log/:id"
