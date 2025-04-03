@@ -15,7 +15,8 @@ const cookies = new Cookies();
 
 export const UserContext = createContext();
 
-axios.defaults.baseURL = "http://localhost:3001/spotter";
+//axios.defaults.baseURL = "http://localhost:3001/spotter";
+axios.defaults.baseURL = "https://spotter-back.vercel.app/spotter";
 axios.defaults.withCredentials = true;
 
 const authToken = cookies.get("token");
