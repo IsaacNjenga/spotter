@@ -25,7 +25,6 @@ function Navbar() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const { shippingLog } = UseShippingLogs();
 
-  // const username = cookies.get("username");
   const firstName = cookies.get("firstName");
   const lastName = cookies.get("lastName");
   const avatarUrl = cookies.get("avatarUrl");

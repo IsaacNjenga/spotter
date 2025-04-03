@@ -25,7 +25,7 @@ const ELDTimeline = ({ log, logLoading }) => {
       timelineInstance.current.destroy();
     }
 
-    // Fixed colors & IDs for each status
+    // Fixed the colors & IDs for each status
     const statusGroups = {
       "Off-Duty": { id: 1, color: "#808080" },
       "Sleeper Berth": { id: 2, color: "#0047AB" },
@@ -33,22 +33,20 @@ const ELDTimeline = ({ log, logLoading }) => {
       "On-Duty": { id: 4, color: "#28A745" },
     };
 
-    // Transform log data to match timeline requirements
     const eldData = log[0].currentLocations.map((entry, index) => ({
       id: index,
-      content: `${entry.currentMode} (${entry.currentLocation})`, // Show mode + location
-      start: dayjs().format(`YYYY-MM-DDT${entry.currentStartTime}:00Z`), // Convert to ISO format
+      content: `${entry.currentMode} (${entry.currentLocation})`,
+      start: dayjs().format(`YYYY-MM-DDT${entry.currentStartTime}:00Z`),
       end: entry.currentEndTime
         ? dayjs().format(`YYYY-MM-DDT${entry.currentEndTime}:00Z`)
-        : null, // If no end time, keep it running
+        : null,
       group: statusGroups[entry.currentMode]?.id || 0,
       style: `background-color: ${
         statusGroups[entry.currentMode]?.color || "#000"
       }; color: white; border-radius: 8px; padding: 5px; font-weight: bold;`,
-      title: `Location: ${entry.currentLocation}`, // Tooltip on hover
+      title: `Location: ${entry.currentLocation}`,
     }));
 
-    // Create the dataset for the eld
     const items = new DataSet(eldData);
     const groups = new DataSet([
       {
@@ -73,7 +71,6 @@ const ELDTimeline = ({ log, logLoading }) => {
       },
     ]);
 
-    // Initialize timeline
     timelineInstance.current = new Timeline(timelineContainer, items, {
       groups,
       stack: false,
