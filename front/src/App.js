@@ -10,7 +10,6 @@ import LocationLog from "./pages/locationLog";
 import UpdateLog from "./pages/updateLog";
 import UpdateShippingLog from "./pages/updateShippingLog";
 import AllLogs from "./pages/allLogs";
-import Map from "./components/map";
 
 const cookies = new Cookies();
 
@@ -50,7 +49,6 @@ function App() {
             <Route path="log-trip" element={<LogTrip />} />
             <Route path="log-location" element={<LocationLog />} />
             <Route path="logs" element={<AllLogs />} />
-            <Route path="map" element={<Map />} />
             <Route path="update-log/:id" element={<UpdateLog />} />
             <Route
               path="update-shipping-log/:id"

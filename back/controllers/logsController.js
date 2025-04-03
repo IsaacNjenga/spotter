@@ -32,6 +32,8 @@ const fetchLogs = async (req, res) => {
   }
 };
 
+// const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
 const fetchLog = async (req, res) => {
   const { id } = req.query;
   if (!id) {

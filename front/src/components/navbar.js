@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import Cookie from "universal-cookie";
 import Swal from "sweetalert2";
+import UseShippingLogs from "../assets/hooks/useShippingLogs";
 
 const cookies = new Cookie();
 
@@ -22,6 +23,7 @@ function Navbar() {
   const [current, setCurrent] = useState(location.pathname);
   const { isMobile } = useContext(UserContext);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const { shippingLog } = UseShippingLogs();
 
   // const username = cookies.get("username");
   const firstName = cookies.get("firstName");
@@ -51,9 +53,10 @@ function Navbar() {
 
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "Shipping Log", path: "/log-trip" },
+    ...(shippingLog.length === 0
+      ? [{ label: "Shipping Log", path: "/log-trip" }]
+      : []), 
     { label: "All Logs", path: "/logs" },
-    { label: "Map", path: "/map" },
   ];
 
   const toggleDrawer = () => setDrawerVisible(!drawerVisible);

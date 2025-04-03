@@ -82,9 +82,6 @@ function ShippingLogs() {
                     {log.terminalAddress}
                   </Descriptions.Item>
                 </Descriptions>
-                <span>
-                  <p>Shipping Date: {format(new Date(log.date), "PPPP")}</p>
-                </span>
                 {loadingStates[log.date] ? (
                   <Spin size="small" style={{ marginTop: 10 }} />
                 ) : (
@@ -110,7 +107,7 @@ export default ShippingLogs;
 
 const styles = {
   container: {
-    maxWidth: "1000px",
+    maxWidth: "1200px",
     margin: "auto",
     padding: "5px 20px",
   },

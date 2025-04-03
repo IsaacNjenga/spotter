@@ -18,7 +18,6 @@ function UseCustomLog() {
       const formattedDate =
         new Date(date).toISOString().split("T")[0] + "T00:00:00.000Z";
 
-      console.log(formattedDate);
       const res = await axios.get(
         `get-custom-log?id=${id}&date=${formattedDate}`
       );

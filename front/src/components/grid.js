@@ -1,14 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DataSet } from "vis-data";
 import { Timeline } from "vis-timeline/standalone";
 import "vis-timeline/styles/vis-timeline-graph2d.min.css";
 import dayjs from "dayjs";
+import { Button, Modal } from "antd";
+import Map from "./map";
 
 const ELDTimeline = ({ log, logLoading }) => {
   const timelineRef = useRef(null);
   const timelineInstance = useRef(null);
-  // const { log, logLoading } = UseTodaysLog();
 
+  const locationData = log[0]?.currentLocations;
   useEffect(() => {
     if (!log || logLoading || !log[0]?.currentLocations) {
       console.log("nothing received");
@@ -84,6 +86,18 @@ const ELDTimeline = ({ log, logLoading }) => {
     });
   }, [log, logLoading]);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
   return (
     <div
       style={{
@@ -96,16 +110,40 @@ const ELDTimeline = ({ log, logLoading }) => {
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h2
+      <div
         style={{
-          textAlign: "center",
-          marginBottom: "15px",
-          color: "#333",
-          fontFamily: "Raleway",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        ELD Timeline
-      </h2>
+        <div style={{ textAlign: "center", flex: 1 }}>
+          <h2
+            style={{
+              textAlign: "center",
+              marginBottom: "15px",
+              color: "#333",
+              fontFamily: "Raleway",
+            }}
+          >
+            ELD Timeline
+          </h2>
+        </div>
+        <div>
+          <Button type="primary" onClick={showModal}>
+            View Map
+          </Button>
+          <Modal
+            title="Trip Map"
+            open={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+          >
+            <Map locationData={locationData} />
+          </Modal>
+        </div>
+      </div>
       <div ref={timelineRef} style={{ height: "150%" }}></div>
     </div>
   );
