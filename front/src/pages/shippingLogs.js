@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import UseAllShippingLogs from "../assets/hooks/useAllShippingLogs";
 import { Card, Descriptions, Spin, Typography, Collapse } from "antd";
 import { format } from "date-fns";
 import { CaretRightOutlined } from "@ant-design/icons";
-//import ELDTimeline from "../components/grid";
+import UseCustomLog from "../assets/hooks/customLog";
+import ELDTimeline from "../components/grid";
+import { UserContext } from "../App";
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
 
 function ShippingLogs() {
+  const { user } = useContext(UserContext);
   const { shippingLogs, shippingsLoading } = UseAllShippingLogs();
+  const { customLogs, loadingStates, fetchLogs } = UseCustomLog();
 
   return (
     <div style={styles.container}>
@@ -27,6 +31,15 @@ function ShippingLogs() {
             <CaretRightOutlined rotate={isActive ? 90 : 0} />
           )}
           style={styles.collapse}
+          onChange={(activeKeys) => {
+            if (activeKeys.length > 0) {
+              const logId = activeKeys[0];
+              const selectedLog = shippingLogs.find((log) => log._id === logId);
+              if (selectedLog) {
+                fetchLogs(selectedLog.date, user);
+              }
+            }
+          }}
         >
           {shippingLogs.map((log) => (
             <Panel
@@ -69,7 +82,17 @@ function ShippingLogs() {
                     {log.terminalAddress}
                   </Descriptions.Item>
                 </Descriptions>
-                {/* <ELDTimeline eldData = {{}}/> */}
+                <span>
+                  <p>Shipping Date: {format(new Date(log.date), "PPPP")}</p>
+                </span>
+                {loadingStates[log.date] ? (
+                  <Spin size="small" style={{ marginTop: 10 }} />
+                ) : (
+                  <ELDTimeline
+                    log={customLogs[log.date] || []}
+                    logLoading={loadingStates[log.date]}
+                  />
+                )}
               </Card>
             </Panel>
           ))}
@@ -114,7 +137,7 @@ const styles = {
   card: {
     boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
     borderRadius: "8px",
-    padding: "20px",
+    padding: "10px",
   },
   label: {
     fontWeight: "bold",

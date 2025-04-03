@@ -21,7 +21,9 @@ const fetchShippingLogs = async (req, res) => {
   }
   try {
     const objectId = new mongoose.Types.ObjectId(id);
-    const shippingLogs = await ShippingModel.find({ createdBy: objectId });
+    const shippingLogs = await ShippingModel.find({ createdBy: objectId }).sort(
+      { date: -1 }
+    );
     res.status(201).json({ success: true, shippingLogs });
   } catch (error) {
     return res.status(500).json({ error: error.message });

@@ -3,6 +3,7 @@ import { login, register } from "../controllers/userController.js";
 import { reverseGeocode } from "../controllers/geocodeController.js";
 import {
   createLog,
+  fetchCustomLog,
   fetchLog,
   fetchLogs,
   updateLog,
@@ -30,6 +31,7 @@ router.put("/update-log/:id", updateLog);
 router.post("/create-shipping-log", createShippingLog);
 router.get("/get-all-shipping-logs", fetchShippingLogs);
 router.get("/get-shipping-log", fetchShippingLog);
+router.get("/get-custom-log", fetchCustomLog);
 router.put("/update-shipping-log/:id", updateShippingLog);
 
 //reverse Geocode route

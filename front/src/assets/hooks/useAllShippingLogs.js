@@ -12,7 +12,7 @@ function UseAllShippingLogs() {
 
   useEffect(() => {
     const fetchLog = async () => {
-        setShippingsLoading(true);
+      setShippingsLoading(true);
       if (!id) {
         console.warn("No user ID found, skipping request.");
         return;

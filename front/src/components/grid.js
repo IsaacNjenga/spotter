@@ -10,7 +10,10 @@ const ELDTimeline = ({ log, logLoading }) => {
   // const { log, logLoading } = UseTodaysLog();
 
   useEffect(() => {
-    if (!log || logLoading || !log[0]?.currentLocations) return;
+    if (!log || logLoading || !log[0]?.currentLocations) {
+      console.log("nothing received");
+      return;
+    }
 
     const timelineContainer = timelineRef.current;
     if (!timelineContainer) return;
