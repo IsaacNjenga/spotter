@@ -1,7 +1,6 @@
 .auth-bg {
     background: url("../images/home5.jpg") no-repeat center center/cover;
-    height: 100vh;
-    padding: 0; 
+    height: 100%;
     display: flex; 
     align-items: center;
     justify-content: center; 

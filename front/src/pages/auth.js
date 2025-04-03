@@ -202,7 +202,6 @@ function Auth() {
         // }
 
         window.location.reload();
-        
       }
     } catch (error) {
       console.log(error);
@@ -229,9 +228,8 @@ function Auth() {
           style={{
             background: "linear-gradient(to left, #4e5567 30%, #81817f 60%)",
             maxWidth: isSignUp ? 950 : 600,
-            margin: "0px auto",
-            padding: 0,
-            height: "auto",
+            margin: "30px auto",
+            height: "100%",
             width: "100%",
           }}
           className="card"
